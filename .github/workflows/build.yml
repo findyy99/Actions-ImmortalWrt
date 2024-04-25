@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
 
 env:
-    CLONE_COMMAND: git clone -b mt7986 --depth 1 https://github.com/padavanonly/immortalwrtARM
+    CLONE_COMMAND: git clone -b openwrt-21.02 --depth 1 https://github.com/immortalwrt/immortalwrt.git
     REPO_NAME: immortalwrtARM
 
 jobs:
@@ -46,10 +46,10 @@ jobs:
             - name: Build immortalwrtARM
               run: |
                   cd $REPO_NAME
-                  make -j$(nproc)
+                  # 默认make -j$(nproc)，代表多线程编译。如果求稳想看报错信息，可以使用make -j1 V=99代替
+                  make -j1 V=99
                   pwd
                   ls
-# 默认make -j$(nproc)，代表多线程编译。如果求稳想看报错信息，可以使用make -j1 V=99代替
 
             - name: Move results to root
               run: |
