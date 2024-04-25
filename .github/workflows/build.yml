@@ -54,11 +54,11 @@ jobs:
             - name: Move results to root
               run: |
                   cd /home/runner/work/Actions-ImmortalWrt/Actions-ImmortalWrt/$REPO_NAME/bin/targets/rockchip/armv8
-                  mv *rootfs.tar.gz ../
+                  mv immortalwrt-rockchip-armv8-friendlyarm_nanopi-r4s-rootfs.tar.gz ../
                   cd ..
 
             - name: Upload build
               uses: actions/upload-artifact@v4
               with:
                   name: ImmortalWrt_build_files
-                  path: '*rootfs.tar.gz'
+                  path: immortalwrt-rockchip-armv8-friendlyarm_nanopi-r4s-rootfs.tar.gz
