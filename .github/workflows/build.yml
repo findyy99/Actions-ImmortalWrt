@@ -12,7 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Clone from github
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Clone immortalwrt repo
               run: |
@@ -38,7 +38,7 @@ jobs:
                   cp -f .config feeds.conf.default diy.sh $REPO_NAME/
 
             - name: Upload config before build
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: config before build
                   path: .config
@@ -58,7 +58,7 @@ jobs:
                   cd ..
 
             - name: Upload build
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: ImmortalWrt_build_files
                   path: targets
