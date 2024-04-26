@@ -53,6 +53,7 @@ jobs:
 
             - name: Move results to root
               run: |
+                  tree
                   cd /home/runner/work/Actions-ImmortalWrt/Actions-ImmortalWrt/$REPO_NAME/bin/
                   ls targets
                   mv targets ../
