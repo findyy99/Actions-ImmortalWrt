@@ -107,25 +107,12 @@ jobs:
                   sudo apt install -y tree
                   tree -d -L 3
 
-            - name: TEst1
-              run: |
-                  pwd
-                  tree -d -L 3
-
-            - run: pwd
-            - run: mkdir -p path/to/artifact
-            - run: echo hello > path/to/artifact/world.txt
-            - uses: actions/upload-artifact@v4
+            - name: Upload bin directory
+              uses: actions/upload-artifact@v4
+              # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
               with:
-                name: my-artifact
-                path: immortalwrt/
-
-            # - name: Upload bin directory
-            #   uses: actions/upload-artifact@v4
-            #   # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-            #   with:
-            #     name: immortalwrt_bin${{ env.DEVICE_NAME }}
-            #     path: /
+                name: immortalwrt_bin${{ env.DEVICE_NAME }}
+                path: ${{ env.REPO_NAME }}
 
 
           #  # Set the full name of the rootfs.tar.gz file to an environment variable
