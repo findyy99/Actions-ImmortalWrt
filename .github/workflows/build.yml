@@ -8,6 +8,7 @@ env:
     REPO_BRANCH: openwrt-23.05
     # CLONE_COMMAND: git clone -b openwrt-23.05 --depth 1 https://github.com/immortalwrt/immortalwrt.git
     REPO_NAME: immortalwrt
+    UPLOAD_BIN_DIR: true
 
 jobs:
     build:
@@ -95,11 +96,17 @@ jobs:
                   cd $REPO_NAME
                   echo -e "$(nproc) thread compile"
                   # make -j$(nproc) || make -j1 || make -j1 V=s
-                  # echo "status=success" >> $GITHUB_OUTPUT
+                  echo "status=success" >> $GITHUB_OUTPUT
                   grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -E 's/CONFIG_TARGET_(.*)_DEVICE_(.*)=y/immortalwrt-\1-\2/' > DEVICE_NAME
 
-                  echo "DEVICE_NAME=_$(cat DEVICE_NAME)"
+                  echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
 
+            - name: Upload bin directory
+              uses: actions/upload-artifact@v4
+              # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+              with:
+                name: immortalwrt_bin${{ env.DEVICE_NAME }}
+                path: $REPO_NAME/bin
 
 
           #  # Set the full name of the rootfs.tar.gz file to an environment variable
