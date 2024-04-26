@@ -100,6 +100,9 @@ jobs:
                   grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -E 's/CONFIG_TARGET_(.*)_DEVICE_(.*)=y/immortalwrt-\1-\2/' > DEVICE_NAME
 
                   echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
+                  sudo apt install -y tree
+                  tree
+                  mkdir $REPO_NAME/bin
 
             - name: Upload bin directory
               uses: actions/upload-artifact@v4
