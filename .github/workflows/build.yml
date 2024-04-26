@@ -101,19 +101,17 @@ jobs:
 
                   echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
                   sudo apt install -y tree
-                  mkdir -p $REPO_NAME/bin/test
                   tree -d -L 3
+            - name: TEst
+              run: |
                   pwd
-                  echo 'this is a test' > $REPO_NAME/bin/test/test.sh
-                  cp $REPO_NAME/LICENSES $REPO_NAME/bin/
-                  cd $REPO_NAME/bin && ls
 
             - name: Upload bin directory
               uses: actions/upload-artifact@v4
               # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
               with:
                 name: immortalwrt_bin${{ env.DEVICE_NAME }}
-                path: $REPO_NAME/bin
+                path: bin
 
 
           #  # Set the full name of the rootfs.tar.gz file to an environment variable
