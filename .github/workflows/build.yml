@@ -51,14 +51,18 @@ jobs:
                   pwd
                   ls
 
-            - name: Find rootfs.gz files
-              id: find-files
+           # Set the full name of the rootfs.tar.gz file to an environment variable
+            - name: Set rootfs file name
+              id: set-filename
               run: |
-                file_paths=$(find . -type f -name "*rootfs.tar.gz")
-                echo "::set-output name=file_paths::$file_paths"
+                  file_path=$(find . -type f -name "*rootfs.tar.gz" | head -n 1)
+                  file_name=$(basename "$file_path")
+                  echo "rootfs_file_name=$file_name" >> $GITHUB_ENV
+                  echo "rootfs_full_path=$file_path" >> $GITHUB_ENV
 
-            - name: Upload rootfs.gz files
+              # Upload rootfs.gz file using its full name
+            - name: Upload rootfs.gz file
               uses: actions/upload-artifact@v4
               with:
-                name: rootfs_files
-                path: ${{ steps.find-files.outputs.file_paths }}
+                name: ${{ env.rootfs_file_name }}
+                path: ${{ env.rootfs_full_path }}
