@@ -103,7 +103,7 @@ jobs:
                   sudo apt install -y tree
                   tree -d -L 3
                   mkdir -p $REPO_NAME/bin/test
-                  vim $REPO_NAME/bin/test/test.sh
+                  echo 'this is a test' > $REPO_NAME/bin/test/test.sh
 
             - name: Upload bin directory
               uses: actions/upload-artifact@v4
