@@ -101,8 +101,9 @@ jobs:
 
                   echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
                   sudo apt install -y tree
-                  tree -d -L 3
                   mkdir -p $REPO_NAME/bin/test
+                  tree -d -L 3
+                  pwd
                   echo 'this is a test' > $REPO_NAME/bin/test/test.sh
                   cp $REPO_NAME/LICENSES $REPO_NAME/bin/
                   cd $REPO_NAME/bin && ls
