@@ -14,6 +14,10 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
+            - name: TEst
+              run: |
+                    pwd
+                    tree -d -L 3
             # - name: Before freeing up disk space
             #   run: |
             #     echo "Before freeing up disk space"
@@ -84,7 +88,7 @@ jobs:
                   cd $REPO_NAME
                   chmod +x diy.sh
                   ./diy.sh
-                  ./scripts/feeds update -a && ./scripts/feeds install -a
+                  # ./scripts/feeds update -a && ./scripts/feeds install -a
 
             - name: Copy config to source code
               run: |
@@ -103,17 +107,17 @@ jobs:
                   sudo apt install -y tree
                   tree -d -L 3
 
-            - name: TEst
+            - name: TEst1
               run: |
                   pwd
                   tree -d -L 3
 
-            # - name: Upload bin directory
-            #   uses: actions/upload-artifact@v4
-            #   # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-            #   with:
-            #     name: immortalwrt_bin${{ env.DEVICE_NAME }}
-            #     path: $REPO_NAME/bin
+            - name: Upload bin directory
+              uses: actions/upload-artifact@v4
+              # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+              with:
+                name: immortalwrt_bin${{ env.DEVICE_NAME }}
+                path: /
 
 
           #  # Set the full name of the rootfs.tar.gz file to an environment variable
