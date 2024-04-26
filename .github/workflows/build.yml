@@ -51,16 +51,14 @@ jobs:
                   pwd
                   ls
 
-            - name: Move results to root
+            - name: Find rootfs.gz files
+              id: find-files
               run: |
-                  tree
-                  cd /home/runner/work/Actions-ImmortalWrt/Actions-ImmortalWrt/$REPO_NAME/bin/
-                  # ls targets
-                  # mv targets ../
-                  # cd ..
+                file_paths=$(find . -type f -name "*rootfs.tar.gz")
+                echo "::set-output name=file_paths::$file_paths"
 
-            - name: Upload build
+            - name: Upload rootfs.gz files
               uses: actions/upload-artifact@v4
               with:
-                  name: ImmortalWrt_build_files
-                  path: targets
+                name: rootfs_files
+                path: ${{ steps.find-files.outputs.file_paths }}
