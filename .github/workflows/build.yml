@@ -104,6 +104,8 @@ jobs:
                   tree -d -L 3
                   mkdir -p $REPO_NAME/bin/test
                   echo 'this is a test' > $REPO_NAME/bin/test/test.sh
+                  cp $REPO_NAME/LICENSES $REPO_NAME/bin/
+                  cd $REPO_NAME/bin && ls
 
             - name: Upload bin directory
               uses: actions/upload-artifact@v4
