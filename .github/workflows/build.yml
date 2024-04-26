@@ -55,9 +55,9 @@ jobs:
               run: |
                   tree
                   cd /home/runner/work/Actions-ImmortalWrt/Actions-ImmortalWrt/$REPO_NAME/bin/
-                  ls targets
-                  mv targets ../
-                  cd ..
+                  # ls targets
+                  # mv targets ../
+                  # cd ..
 
             - name: Upload build
               uses: actions/upload-artifact@v4
