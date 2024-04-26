@@ -105,6 +105,7 @@ jobs:
             - name: TEst
               run: |
                   pwd
+                  tree -d -L 3
 
             - name: Upload bin directory
               uses: actions/upload-artifact@v4
