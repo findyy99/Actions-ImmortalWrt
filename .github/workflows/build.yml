@@ -95,24 +95,25 @@ jobs:
               run: |
                   cd $REPO_NAME
                   echo -e "$(nproc) thread compile"
-                  make -j$(nproc) || make -j1 || make -j1 V=s
+                  # make -j$(nproc) || make -j1 || make -j1 V=s
                   echo "status=success" >> $GITHUB_OUTPUT
                   grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -E 's/CONFIG_TARGET_(.*)_DEVICE_(.*)=y/immortalwrt-\1-\2/' > DEVICE_NAME
 
                   echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
                   sudo apt install -y tree
                   tree -d -L 3
-            # - name: TEst
-            #   run: |
-            #       pwd
-            #       tree -d -L 3
 
-            - name: Upload bin directory
-              uses: actions/upload-artifact@v4
-              # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-              with:
-                name: immortalwrt_bin${{ env.DEVICE_NAME }}
-                path: $REPO_NAME/bin
+            - name: TEst
+              run: |
+                  pwd
+                  tree -d -L 3
+
+            # - name: Upload bin directory
+            #   uses: actions/upload-artifact@v4
+            #   # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+            #   with:
+            #     name: immortalwrt_bin${{ env.DEVICE_NAME }}
+            #     path: $REPO_NAME/bin
 
 
           #  # Set the full name of the rootfs.tar.gz file to an environment variable
