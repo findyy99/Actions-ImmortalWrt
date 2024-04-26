@@ -4,7 +4,9 @@ on:
     workflow_dispatch:
 
 env:
-    CLONE_COMMAND: git clone -b openwrt-23.05 --depth 1 https://github.com/immortalwrt/immortalwrt.git
+    REPO_URL: https://github.com/immortalwrt/immortalwrt
+    REPO_BRANCH: openwrt-23.05
+    # CLONE_COMMAND: git clone -b openwrt-23.05 --depth 1 https://github.com/immortalwrt/immortalwrt.git
     REPO_NAME: immortalwrt
 
 jobs:
@@ -57,58 +59,60 @@ jobs:
                 df -hT
                 echo "=============================================================================="
 
-            - name: Clone from github
+            - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Clone immortalwrt repo
+            - name: Clone immortalwrt code
               run: |
-                  $CLONE_COMMAND
+                  git clone --depth=1 $REPO_URL -b $REPO_BRANCH $REPO_NAME
 
             - name: Copy config to source code
               run: |
-                  cp -f .config feeds.conf.default diy.sh $REPO_NAME/
-
-            - name: Install the software packages required for compilation
-              run: |
-                  sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
-
-            - name: Get the dependency of immortalwrt
-              run: |
-                  cd $REPO_NAME
-                  chmod +x diy.sh
-                  ./diy.sh
-                  ./scripts/feeds update -a && ./scripts/feeds install -a
-
-            - name: Copy config to source code
-              run: |
-                  cp -f .config feeds.conf.default diy.sh $REPO_NAME/
-
-            - name: Upload config before build
-              uses: actions/upload-artifact@v4
-              with:
-                  name: config before build
-                  path: .config
-
-            - name: Build immortalwrt
-              run: |
-                  cd $REPO_NAME
-                  # 默认make -j$(nproc)，代表多线程编译。如果求稳想看报错信息，可以使用make -j1 V=99代替
-                  make -j$(nproc)
                   pwd
-                  ls
+                  cp -f .config feeds.conf.default diy.sh immortalwrt
+                  pwd
 
-           # Set the full name of the rootfs.tar.gz file to an environment variable
-            - name: Set rootfs file name
-              id: set-filename
-              run: |
-                  file_path=$(find . -type f -name "*rootfs.tar.gz" | head -n 1)
-                  file_name=$(basename "$file_path")
-                  echo "rootfs_file_name=$file_name" >> $GITHUB_ENV
-                  echo "rootfs_full_path=$file_path" >> $GITHUB_ENV
+          #   - name: Install the software packages required for compilation
+          #     run: |
+          #         sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
 
-              # Upload rootfs.gz file using its full name
-            - name: Upload rootfs.gz file
-              uses: actions/upload-artifact@v4
-              with:
-                name: ${{ env.rootfs_file_name }}
-                path: ${{ env.rootfs_full_path }}
+          #   - name: Get the dependency of immortalwrt
+          #     run: |
+          #         cd $REPO_NAME
+          #         chmod +x diy.sh
+          #         ./diy.sh
+          #         ./scripts/feeds update -a && ./scripts/feeds install -a
+
+          #   - name: Copy config to source code
+          #     run: |
+          #         cp -f .config feeds.conf.default diy.sh $REPO_NAME/
+
+          #   - name: Upload config before build
+          #     uses: actions/upload-artifact@v4
+          #     with:
+          #         name: config before build
+          #         path: .config
+
+          #   - name: Build immortalwrt
+          #     run: |
+          #         cd $REPO_NAME
+          #         # 默认make -j$(nproc)，代表多线程编译。如果求稳想看报错信息，可以使用make -j1 V=99代替
+          #         make -j$(nproc)
+          #         pwd
+          #         ls
+
+          #  # Set the full name of the rootfs.tar.gz file to an environment variable
+          #   - name: Set rootfs file name
+          #     id: set-filename
+          #     run: |
+          #         file_path=$(find . -type f -name "*rootfs.tar.gz" | head -n 1)
+          #         file_name=$(basename "$file_path")
+          #         echo "rootfs_file_name=$file_name" >> $GITHUB_ENV
+          #         echo "rootfs_full_path=$file_path" >> $GITHUB_ENV
+
+          #     # Upload rootfs.gz file using its full name
+          #   - name: Upload rootfs.gz file
+          #     uses: actions/upload-artifact@v4
+          #     with:
+          #       name: ${{ env.rootfs_file_name }}
+          #       path: ${{ env.rootfs_full_path }}
