@@ -6,7 +6,6 @@ on:
 env:
     REPO_URL: https://github.com/immortalwrt/immortalwrt
     REPO_BRANCH: openwrt-23.05
-    # CLONE_COMMAND: git clone -b openwrt-23.05 --depth 1 https://github.com/immortalwrt/immortalwrt.git
     REPO_NAME: immortalwrt
     UPLOAD_BIN_DIR: true
 
@@ -14,55 +13,51 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - name: TEst
+            - name: Before freeing up disk space
               run: |
-                    pwd
-                    tree -d -L 3
-            # - name: Before freeing up disk space
-            #   run: |
-            #     echo "Before freeing up disk space"
-            #     echo "=============================================================================="
-            #     df -hT
-            #     echo "=============================================================================="
+                echo "Before freeing up disk space"
+                echo "=============================================================================="
+                df -hT
+                echo "=============================================================================="
       
-            # - name: "Optimize Disk Space"
-            #   uses: "hugoalh/disk-space-optimizer-ghaction@v0.8.0"
-            #   with:
-            #     operate_sudo: "True"
-            #     general_include: ".+"
-            #     general_exclude: |-
-            #       ^GCC$
-            #       ^G\+\+$
-            #       Clang
-            #       LLVM
-            #     docker_include: ".+"
-            #     docker_prune: "True"
-            #     docker_clean: "True"
-            #     apt_prune: "True"
-            #     apt_clean: "True"
-            #     homebrew_prune: "True"
-            #     homebrew_clean: "True"
-            #     npm_prune: "True"
-            #     npm_clean: "True"
-            #     os_swap: "True"
+            - name: "Optimize Disk Space"
+              uses: "hugoalh/disk-space-optimizer-ghaction@v0.8.0"
+              with:
+                operate_sudo: "True"
+                general_include: ".+"
+                general_exclude: |-
+                  ^GCC$
+                  ^G\+\+$
+                  Clang
+                  LLVM
+                docker_include: ".+"
+                docker_prune: "True"
+                docker_clean: "True"
+                apt_prune: "True"
+                apt_clean: "True"
+                homebrew_prune: "True"
+                homebrew_clean: "True"
+                npm_prune: "True"
+                npm_clean: "True"
+                os_swap: "True"
       
-            # - name: Freeing up disk space
-            #   uses: easimon/maximize-build-space@master
-            #   with: 
-            #     root-reserve-mb: 2048
-            #     swap-size-mb: 1
-            #     remove-dotnet: 'true'
-            #     remove-android: 'true'
-            #     remove-haskell: 'true'
-            #     remove-codeql: 'true'
-            #     remove-docker-images: 'true'
+            - name: Freeing up disk space
+              uses: easimon/maximize-build-space@master
+              with: 
+                root-reserve-mb: 2048
+                swap-size-mb: 1
+                remove-dotnet: 'true'
+                remove-android: 'true'
+                remove-haskell: 'true'
+                remove-codeql: 'true'
+                remove-docker-images: 'true'
       
-            # - name: Free up disk space complete
-            #   run: |
-            #     echo "Free up disk space complete"
-            #     echo "=============================================================================="
-            #     df -hT
-            #     echo "=============================================================================="
+            - name: Free up disk space complete
+              run: |
+                echo "Free up disk space complete"
+                echo "=============================================================================="
+                df -hT
+                echo "=============================================================================="
 
             - name: Checkout
               uses: actions/checkout@v4
@@ -74,21 +69,18 @@ jobs:
             - name: Copy config to source code
               run: |
                   sudo apt install -y tree
-                  tree
-                  pwd
                   cp -f .config feeds.conf.default diy.sh immortalwrt
-                  pwd
 
             - name: Initialization environment
               run: |
-                  # sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+                  sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
 
             - name: Update and install feeds
               run: |
                   cd $REPO_NAME
                   chmod +x diy.sh
                   ./diy.sh
-                  # ./scripts/feeds update -a && ./scripts/feeds install -a
+                  ./scripts/feeds update -a && ./scripts/feeds install -a
 
             - name: Copy config to source code
               run: |
@@ -99,20 +91,17 @@ jobs:
               run: |
                   cd $REPO_NAME
                   echo -e "$(nproc) thread compile"
-                  # make -j$(nproc) || make -j1 || make -j1 V=s
+                  make -j$(nproc) || make -j1 || make -j1 V=s
                   echo "status=success" >> $GITHUB_OUTPUT
                   grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -E 's/CONFIG_TARGET_(.*)_DEVICE_(.*)=y/immortalwrt-\1-\2/' > DEVICE_NAME
-
                   echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
-                  sudo apt install -y tree
-                  tree -d -L 3
 
             - name: Upload bin directory
               uses: actions/upload-artifact@v4
               # if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
               with:
-                name: ${{ env.DEVICE_NAME }}.zip
-                path: ${{ env.REPO_NAME }}/include
+                name: ${{ env.DEVICE_NAME }}
+                path: ${{ env.REPO_NAME }}/bin/
 
 
           #  # Set the full name of the rootfs.tar.gz file to an environment variable
