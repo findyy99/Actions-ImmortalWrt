@@ -111,14 +111,14 @@ jobs:
               run: |
                   pwd
                   tree -d -L 3
-                  
+
             - run: pwd
             - run: mkdir -p path/to/artifact
             - run: echo hello > path/to/artifact/world.txt
             - uses: actions/upload-artifact@v4
               with:
                 name: my-artifact
-                path: path/to/artifact/world.txt
+                path: $REPO_NAME/
 
             # - name: Upload bin directory
             #   uses: actions/upload-artifact@v4
