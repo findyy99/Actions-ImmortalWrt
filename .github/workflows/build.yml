@@ -68,7 +68,6 @@ jobs:
 
             - name: Copy config to source code
               run: |
-                  sudo apt install -y tree
                   cp -f .config feeds.conf.default diy.sh immortalwrt
 
             - name: Initialization environment
